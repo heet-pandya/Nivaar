@@ -9,54 +9,44 @@ import {
 
 export default function Dashboard({ darkMode, companyData }) {
 
-  const USD_TO_INR = 83; // fixed rate for now
+  const USD_TO_INR = 83;
 
   const currency = companyData.basics.currency || "USD";
 
-  let currentSpendUSD = companyData.basics.spend || 0;
+  // ============================
+  // USE BACKEND OPTIMIZATION DATA
+  // ============================
 
-  let currentSpend =
-    currency === "INR" ? currentSpendUSD * USD_TO_INR : currentSpendUSD;
+  const optimization = companyData.optimization || {
+    currentSpend: 0,
+    optimizedSpend: 0,
+    savings: 0,
+    recommendations: [],
+    status: ""
+  };
 
-  let optimizedSpend = currentSpend * 0.75;
-  let savings = currentSpend - optimizedSpend;
+  // Convert currency only once
+  const currentSpend =
+    currency === "INR"
+      ? optimization.currentSpend * USD_TO_INR
+      : optimization.currentSpend;
+
+  const optimizedSpend =
+    currency === "INR"
+      ? optimization.optimizedSpend * USD_TO_INR
+      : optimization.optimizedSpend;
+
+  const savings =
+    currency === "INR"
+      ? optimization.savings * USD_TO_INR
+      : optimization.savings;
+
+  const recommendations = optimization.recommendations || [];
 
   const format = (value) =>
     currency === "INR"
       ? `₹${value.toFixed(0)}`
       : `$${value.toFixed(0)}`;
-
-  // 🧠 Smart Optimization Rules
-  const recommendations = [];
-
-  if (currentSpendUSD > 5000) {
-    recommendations.push("Use Reserved Instances to save ~20%");
-  }
-
-  if (
-    companyData.infra.traffic &&
-    companyData.infra.traffic.toLowerCase().includes("high")
-  ) {
-    recommendations.push("Enable Auto Scaling for peak traffic");
-  }
-
-  if (
-    companyData.infra.storage &&
-    companyData.infra.storage.toLowerCase().includes("tb")
-  ) {
-    recommendations.push("Optimize storage with lifecycle policies");
-  }
-
-  if (
-    companyData.goals.growth &&
-    Number(companyData.goals.growth) > 30
-  ) {
-    recommendations.push("Adopt scalable cloud architecture");
-  }
-
-  if (recommendations.length === 0) {
-    recommendations.push("Your infrastructure looks well optimized 👍");
-  }
 
   const chartData = [
     { name: "Current", cost: currentSpend },
@@ -64,25 +54,28 @@ export default function Dashboard({ darkMode, companyData }) {
   ];
 
   const card = {
-  background: darkMode
-    ? "rgba(15,23,42,0.9)"
-    : "rgba(255,255,255,0.95)",
-  padding: "24px",
-  borderRadius: "18px",
-  boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
-  color: darkMode ? "white" : "#111827",
-  width: "100%",
-};
-
+    background: darkMode
+      ? "rgba(15,23,42,0.9)"
+      : "rgba(255,255,255,0.95)",
+    padding: "30px",
+    borderRadius: "18px",
+    boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
+    color: darkMode ? "white" : "#111827",
+  };
 
   return (
     <div style={{ padding: "60px", fontFamily: "'Inter', system-ui, sans-serif" }}>
 
-      <h1 style={{ marginBottom: "40px" }}>
-        Cloud Optimization Dashboard ({currency})
+      <h1 style={{ marginBottom: "20px" }}>
+        Cloud Optimization Dashboard 
       </h1>
 
-      {/* Metrics */}
+      {/* STATUS */}
+      <h3 style={{ marginBottom: "40px", color: "#6366f1" }}>
+        Status: {optimization.status}
+      </h3>
+
+      {/* METRICS */}
       <div
         style={{
           display: "grid",
@@ -107,7 +100,7 @@ export default function Dashboard({ darkMode, companyData }) {
         </div>
       </div>
 
-      {/* Chart */}
+      {/* CHART */}
       <div style={{ ...card, marginBottom: "50px" }}>
         <h2 style={{ marginBottom: "20px" }}>Cost Comparison</h2>
 
@@ -126,7 +119,7 @@ export default function Dashboard({ darkMode, companyData }) {
         </ResponsiveContainer>
       </div>
 
-      {/* Infrastructure Summary */}
+      {/* INFRA SUMMARY */}
       <div style={{ ...card, marginBottom: "40px" }}>
         <h2>Infrastructure Summary</h2>
 
@@ -139,14 +132,18 @@ export default function Dashboard({ darkMode, companyData }) {
         </ul>
       </div>
 
-      {/* Optimization Insights */}
+      {/* OPTIMIZATION INSIGHTS */}
       <div style={card}>
         <h2>Optimization Recommendations</h2>
 
         <ul style={{ lineHeight: "2" }}>
-          {recommendations.map((rec, index) => (
-            <li key={index}>💡 {rec}</li>
-          ))}
+          {recommendations.length === 0 ? (
+            <li>Infrastructure looks well optimized 👍</li>
+          ) : (
+            recommendations.map((rec, index) => (
+              <li key={index}>💡 {rec}</li>
+            ))
+          )}
         </ul>
       </div>
 
