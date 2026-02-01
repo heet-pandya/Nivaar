@@ -1,0 +1,138 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px 65px;
+  background: #ffffff;
+
+  box-shadow: 
+    0 1px 2px rgba(0,0,0,0.08),
+    0 8px 24px rgba(0,0,0,0.10);
+
+  font-family: "Inter", system-ui, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ================= */
+/* BRAND */
+/* ================= */
+
+.brand {
+  position: absolute;
+  left: 55px;
+
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  color: #0f172a;
+  text-decoration: none;
+}
+
+/* ================= */
+/* LINKS (DESKTOP) */
+/* ================= */
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-links a {
+  color: #0f172a;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 4px;
+  transition: color 0.2s ease;
+}
+
+/* Hover underline */
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0%;
+  background: #4f46e5;
+  transition: width 0.25s ease;
+}
+
+.nav-links a:hover {
+  color: #4f46e5;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* ================= */
+/* HAMBURGER */
+/* ================= */
+
+.hamburger {
+  display: none;
+  font-size: 26px;
+  cursor: pointer;
+  position: absolute;
+  left: 20px;
+}
+
+/* ================= */
+/* MOBILE MODE */
+/* ================= */
+
+@media (max-width: 768px) {
+
+  .navbar {
+    padding: 16px 20px;
+    justify-content: center;
+  }
+
+  /* Center logo */
+  .brand {
+    position: static;
+    margin: 0 auto;
+  }
+
+  /* Show hamburger */
+  .hamburger {
+    display: block;
+  }
+
+  /* Hide links by default */
+  .nav-links {
+    display: none;
+
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 70px;
+    left: 0;
+
+    background: #ffffff;
+    padding: 20px 0;
+
+    box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+  }
+
+  .nav-links a {
+    padding: 14px 0;
+    font-size: 16px;
+  }
+
+  /* When hamburger clicked */
+  .nav-links.show {
+    display: flex;
+  }
+}
