@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { API_BASE_URL } from "./config";
 
 import heroSymbol from "./assets/images (1).png";
 
@@ -172,7 +173,7 @@ function App() {
   useEffect(() => {
     const localCompany = JSON.parse(localStorage.getItem("company") || "{}");
     if (localCompany.id) {
-      fetch(`http://localhost:5000/api/data/latest/${localCompany.id}`)
+      fetch(`${API_BASE_URL}/api/data/latest/${localCompany.id}`)
         .then((res) => res.json())
         .then((data) => {
           if (data && data.basics) {

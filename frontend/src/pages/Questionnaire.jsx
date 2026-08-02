@@ -72,7 +72,7 @@ export default function Questionnaire({ darkMode, companyData, setCompanyData })
         advanced: companyData.advanced
       });
 
-      const res = await fetch("http://localhost:5000/api/data/questionnaire", {
+      const res = await fetch(`${API_BASE_URL}/api/data/questionnaire`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

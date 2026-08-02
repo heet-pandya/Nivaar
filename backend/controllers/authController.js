@@ -42,7 +42,7 @@ export const registerCompany = async (req, res) => {
 
     const token = jwt.sign(
       { id: company.id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "nivaar_default_jwt_secret_key_2026",
       { expiresIn: "7d" }
     );
 
@@ -87,7 +87,7 @@ export const loginCompany = async (req, res) => {
 
     const token = jwt.sign(
       { id: company.id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "nivaar_default_jwt_secret_key_2026",
       { expiresIn: "7d" }
     );
 

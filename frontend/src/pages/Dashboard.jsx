@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import CloudTopology from "../components/CloudTopology";
+import { API_BASE_URL } from "../config";
 import {
   LineChart,
   Line,
@@ -38,7 +39,7 @@ export default function Dashboard({ darkMode, companyData }) {
   // FETCH INTEGRATION PROFILE (BADGES AND WEBHOOKS) ON BOOT
   useEffect(() => {
     if (companyId) {
-      fetch(`http://localhost:5000/api/integrations/profile/${companyId}`)
+      fetch(`${API_BASE_URL}/api/integrations/profile/${companyId}`)
         .then((res) => res.json())
         .then((data) => {
           if (data.badges) setBadges(data.badges);
@@ -53,7 +54,7 @@ export default function Dashboard({ darkMode, companyData }) {
     if (!companyId) return;
     setSavingWebhook(true);
     try {
-      const res = await fetch("http://localhost:5000/api/integrations/webhook", {
+      const res = await fetch(`${API_BASE_URL}/api/integrations/webhook`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ companyId, webhookUrl: slackWebhook }),
@@ -80,7 +81,7 @@ export default function Dashboard({ darkMode, companyData }) {
     }
     setTestingSlack(true);
     try {
-      const res = await fetch("http://localhost:5000/api/integrations/test-slack", {
+      const res = await fetch(`${API_BASE_URL}/api/integrations/test-slack`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ companyId }),
@@ -102,7 +103,7 @@ export default function Dashboard({ darkMode, companyData }) {
   const handleRunSimulation = async () => {
     setSimulating(true);
     try {
-      const res = await fetch("http://localhost:5000/api/ai/simulate-scenario", {
+      const res = await fetch(`${API_BASE_URL}/api/ai/simulate-scenario`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -131,7 +132,7 @@ export default function Dashboard({ darkMode, companyData }) {
   const fetchAiReport = async () => {
     setGeneratingAI(true);
     try {
-      const res = await fetch("http://localhost:5000/api/ai/generate-report", {
+      const res = await fetch(`${API_BASE_URL}/api/ai/generate-report`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ companyData, awsData }),
@@ -147,7 +148,7 @@ export default function Dashboard({ darkMode, companyData }) {
   };
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/aws/billing")
+    fetch(`${API_BASE_URL}/api/aws/billing`)
       .then((res) => res.json())
       .then((data) => {
         setAwsData(data);
