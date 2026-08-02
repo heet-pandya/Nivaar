@@ -1,4 +1,4 @@
-import Company from "../models/Company.js";
+import { supabase } from "../config/supabaseClient.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -8,21 +8,40 @@ export const registerCompany = async (req, res) => {
   try {
     const { companyName, email, password } = req.body;
 
-    const existing = await Company.findOne({ email });
+    const { data: existing, error: fetchError } = await supabase
+      .from("companies")
+      .select("*")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (fetchError) {
+      throw fetchError;
+    }
+
     if (existing) {
       return res.status(400).json({ msg: "Company already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const company = await Company.create({
-      companyName,
-      email,
-      password: hashedPassword
-    });
+    const { data: company, error: insertError } = await supabase
+      .from("companies")
+      .insert([
+        {
+          company_name: companyName,
+          email,
+          password: hashedPassword,
+        },
+      ])
+      .select()
+      .single();
+
+    if (insertError) {
+      throw insertError;
+    }
 
     const token = jwt.sign(
-      { id: company._id },
+      { id: company.id },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -30,8 +49,8 @@ export const registerCompany = async (req, res) => {
     res.json({
       token,
       company: {
-        id: company._id,
-        companyName: company.companyName,
+        id: company.id,
+        companyName: company.company_name,
         email: company.email
       }
     });
@@ -47,7 +66,16 @@ export const loginCompany = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const company = await Company.findOne({ email });
+    const { data: company, error: fetchError } = await supabase
+      .from("companies")
+      .select("*")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (fetchError) {
+      throw fetchError;
+    }
+
     if (!company) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
@@ -58,7 +86,7 @@ export const loginCompany = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: company._id },
+      { id: company.id },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -66,8 +94,8 @@ export const loginCompany = async (req, res) => {
     res.json({
       token,
       company: {
-        id: company._id,
-        companyName: company.companyName,
+        id: company.id,
+        companyName: company.company_name,
         email: company.email
       }
     });

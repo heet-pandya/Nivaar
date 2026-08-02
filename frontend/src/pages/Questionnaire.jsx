@@ -7,7 +7,7 @@ export default function Questionnaire({ darkMode, companyData, setCompanyData })
 
   const next = () => setStep(step + 1);
   const back = () => setStep(step - 1);
-  
+
   const page = {
     minHeight: "90vh",
     display: "flex",
@@ -72,7 +72,7 @@ export default function Questionnaire({ darkMode, companyData, setCompanyData })
         advanced: companyData.advanced
       });
 
-      const res = await fetch("https://cloud-optimizer-b0b1.onrender.com/api/data/questionnaire", {
+      const res = await fetch("http://localhost:5000/api/data/questionnaire", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -88,20 +88,20 @@ export default function Questionnaire({ darkMode, companyData, setCompanyData })
 
       const data = await res.json();
 
-if (!res.ok) {
-  throw new Error("Save failed");
-}
+      if (!res.ok) {
+        throw new Error("Save failed");
+      }
 
-// 👉 IMPORTANT: Update frontend state with backend response
-setCompanyData({
-  basics: data.basics,
-  infra: data.infra,
-  goals: data.goals,
-  advanced: data.advanced,
-  optimization: data.optimization
-});
+      // 👉 IMPORTANT: Update frontend state with backend response
+      setCompanyData({
+        basics: data.basics,
+        infra: data.infra,
+        goals: data.goals,
+        advanced: data.advanced,
+        optimization: data.optimization
+      });
 
-navigate("/dashboard");
+      navigate("/dashboard");
 
     } catch (err) {
       console.error("SAVE ERROR:", err);
@@ -199,19 +199,19 @@ navigate("/dashboard");
             />
 
             <select
-  style={input}
-  onChange={(e) =>
-    setCompanyData({
-      ...companyData,
-      infra: { ...companyData.infra, traffic: e.target.value },
-    })
-  }
->
-  <option value="">Select Traffic</option>
-  <option value="Low">Low</option>
-  <option value="Medium">Medium</option>
-  <option value="High">High</option>
-</select>
+              style={input}
+              onChange={(e) =>
+                setCompanyData({
+                  ...companyData,
+                  infra: { ...companyData.infra, traffic: e.target.value },
+                })
+              }
+            >
+              <option value="">Select Traffic</option>
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
 
 
             <div style={{ display: "flex", gap: "12px" }}>
@@ -226,27 +226,35 @@ navigate("/dashboard");
           <>
             <h2>Goals & Challenges</h2>
 
-            <input
+            <select
               style={input}
-              placeholder="Cost Challenges"
               onChange={(e) =>
                 setCompanyData({
                   ...companyData,
                   goals: { ...companyData.goals, costIssues: e.target.value },
                 })
               }
-            />
+            >
+              <option value="">Select Cost Challenge</option>
+              <option value="high">High Costs / Over Budget</option>
+              <option value="moderate">Moderate Costs / Manageable</option>
+              <option value="low">Optimized Costs</option>
+            </select>
 
-            <input
+            <select
               style={input}
-              placeholder="Performance Issues"
               onChange={(e) =>
                 setCompanyData({
                   ...companyData,
                   goals: { ...companyData.goals, performance: e.target.value },
                 })
               }
-            />
+            >
+              <option value="">Select Performance Issue</option>
+              <option value="high">Frequent Lag / High CPU Usage</option>
+              <option value="moderate">Occasional Bottlenecks</option>
+              <option value="low">Running Smoothly</option>
+            </select>
 
             <input
               style={input}
@@ -282,27 +290,33 @@ navigate("/dashboard");
               }
             />
 
-            <input
+            <select
               style={input}
-              placeholder="Auto Scaling Enabled?"
               onChange={(e) =>
                 setCompanyData({
                   ...companyData,
                   advanced: { ...companyData.advanced, scaling: e.target.value },
                 })
               }
-            />
+            >
+              <option value="">Auto Scaling Enabled?</option>
+              <option value="yes">Yes, fully automated</option>
+              <option value="no">No, manual scaling</option>
+            </select>
 
-            <input
+            <select
               style={input}
-              placeholder="Reserved Instances Used?"
               onChange={(e) =>
                 setCompanyData({
                   ...companyData,
                   advanced: { ...companyData.advanced, reserved: e.target.value },
                 })
               }
-            />
+            >
+              <option value="">Reserved Instances Used?</option>
+              <option value="yes">Yes, we have 1-yr/3-yr commits</option>
+              <option value="no">No, fully On-Demand pricing</option>
+            </select>
 
             <div style={{ display: "flex", gap: "12px" }}>
               <button style={secondary} onClick={back}>← Back</button>

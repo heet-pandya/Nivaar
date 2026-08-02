@@ -21,19 +21,15 @@ export default function Navbar({ darkMode, toggleTheme }) {
 
       {/* Links */}
       <div className={`nav-links ${open ? "show" : ""}`}>
-
         <Link to="/questionnaire" onClick={() => setOpen(false)}>
           Questionnaire
         </Link>
-
         <Link to="/dashboard" onClick={() => setOpen(false)}>
           Dashboard
         </Link>
-
         <Link to="/login" onClick={() => setOpen(false)}>
           Login
         </Link>
-
       </div>
 
     </nav>
